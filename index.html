@@ -12,7 +12,6 @@
     <!-- The input element defines the search bar -->
     <label for="serialNumber">Serial Number:</label>
     <input type="text" id="serialNumber" placeholder="Enter serial number" onkeydown="handleSearch(event)">
-    <button type="button" onclick="findMagnetLink()">Download</button>
 </form>
 
 <!-- Display area for the magnet link -->
@@ -21,16 +20,14 @@
 <script>
     function handleSearch(event) {
         if (event.key === "Enter") {
-            findMagnetLink();
+            var query = document.getElementById("serialNumber").value;
+            findMagnetLink(query);
         }
     }
     
-    function findMagnetLink() {
-        // Get the serial number from the input field
-        var serialNumber = document.getElementById('serialNumber').value;
-
+    function findMagnetLink(query) {
         // Replace this with your logic to fetch the magnet link based on the serial number
-        var magnetLink = getMagnetLink(serialNumber);
+        var magnetLink = getMagnetLink(query);
 
         // Display the result
         var resultElement = document.getElementById('result');
