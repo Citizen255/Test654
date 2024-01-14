@@ -11,7 +11,7 @@
 <form id="searchForm">
     <!-- The input element defines the search bar -->
     <label for="serialNumber">Serial Number:</label>
-    <input type="text" id="serialNumber" name="serialNumber" placeholder="Enter serial number" onkeydown="findMagnetLink()">
+    <input type="text" id="serialNumber" name="serialNumber" placeholder="Enter serial number" onkeydown="handleSearch()">
     <button type="button" onclick="findMagnetLink()">Download</button>
 </form>
 
@@ -19,6 +19,12 @@
 <div id="result"></div>
 
 <script>
+    function handleSearch(event) {
+        if (event.key === "Enter") {
+            findMagnetLink()
+        }
+    }
+    
     function findMagnetLink() {
         // Get the serial number from the input field
         var serialNumber = document.getElementById('serialNumber').value;
