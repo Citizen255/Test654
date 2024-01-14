@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Magnet Link Finder</title>
+</head>
+<body>
+
+<!-- The form element contains the search bar -->
+<form id="searchForm">
+    <!-- The input element defines the search bar -->
+    <label for="serialNumber">Serial Number:</label>
+    <input type="text" id="serialNumber" name="serialNumber" placeholder="Enter serial number">
+    <button type="button" onclick="findMagnetLink()">Download</button>
+</form>
+
+<!-- Display area for the magnet link -->
+<div id="result"></div>
+
+<script>
+    function findMagnetLink() {
+        // Get the serial number from the input field
+        var serialNumber = document.getElementById('serialNumber').value;
+
+        // Replace this with your logic to fetch the magnet link based on the serial number
+        var magnetLink = getMagnetLink(serialNumber);
+
+        // Display the result
+        var resultElement = document.getElementById('result');
+        resultElement.innerHTML = '';
+
+        if (magnetLink) {
+            //resultElement.innerHTML = '<p>Found Magnet Link:</p>';
+            //resultElement.innerHTML += '<p><a href="magnet:?xt=urn:btih:' + magnetLink + '" target="_blank">' + magnetLink + '</a></p>';
+            window.location.href = 'magnet:?xt=urn:btih:' + magnetLink;
+        } else {
+            resultElement.innerHTML = '<p>No Magnet Link found for the provided serial number.</p>';
+        }
+    }
+
+    // Replace this function with your actual logic to fetch the magnet link from the server
+    function getMagnetLink(serialNumber) {
+        // Dummy data - replace this with your actual data retrieval logic
+        var magnetLinks = {
+            'BCES00850': '8b7fbe7c0329662d88abc94fafab02bbe3705966',
+            'BCUS98208': '660f08f941b7b3c54801d500a17a8bd742b20f4e'
+        };
+
+        return magnetLinks[serialNumber];
+    }
+</script>
+
+</body>
+</html>
