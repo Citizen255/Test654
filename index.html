@@ -1,58 +1,100 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Magnet Link Finder</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
 </head>
 <body>
 
-<!-- The form element contains the search bar -->
-<form id="searchForm">
-    <!-- The input element defines the search bar -->
-    <label for="serialNumber">Serial Number:</label>
-    <input type="text" id="serialNumber" placeholder="Enter serial number" onkeydown="handleSearch(event)">
-</form>
+  <input type="text" id="searchInput" placeholder="Search...">
+  <ul id="suggestions"></ul>
 
-<!-- Display area for the magnet link -->
-<div id="result"></div>
+  <script>
+    class TrieNode {
+      constructor() {
+        this.children = {};
+        this.isEndOfWord = false;
+      }
+    }
 
-<script>
-    function handleSearch(event) {
-        if (event.key === "Enter") {
-            event.preventDefault();
-            var query = document.getElementById("serialNumber").value;
-            findMagnetLink(query);
+    class Trie {
+      constructor() {
+        this.root = new TrieNode();
+      }
+
+      insert(word) {
+        let node = this.root;
+        for (let char of word) {
+          if (!node.children[char]) {
+            node.children[char] = new TrieNode();
+          }
+          node = node.children[char];
         }
-    }
-    
-    function findMagnetLink(query) {
-        // Replace this with your logic to fetch the magnet link based on the serial number
-        var magnetLink = getMagnetLink(query);
+        node.isEndOfWord = true;
+      }
 
-        // Display the result
-        var resultElement = document.getElementById('result');
-        resultElement.innerHTML = '';
-
-        if (magnetLink) {
-            window.location.href = 'magnet:?xt=urn:btih:' + magnetLink;
-        } else {
-            resultElement.innerHTML = '<p>No Magnet Link found for the provided serial number.</p>';
+      findSuggestions(prefix) {
+        let node = this.root;
+        for (let char of prefix) {
+          if (!node.children[char]) {
+            return [];
+          }
+          node = node.children[char];
         }
+        return this._getAllWords(node, prefix);
+      }
+
+      _getAllWords(node, currentPrefix) {
+        let suggestions = [];
+        if (node.isEndOfWord) {
+          suggestions.push(currentPrefix);
+        }
+
+        for (let [char, childNode] of Object.entries(node.children)) {
+          suggestions = suggestions.concat(this._getAllWords(childNode, currentPrefix + char));
+        }
+
+        return suggestions;
+      }
     }
 
-    // Replace this function with your actual logic to fetch the magnet link from the server
-    function getMagnetLink(serialNumber) {
-        // Dummy data - replace this with your actual data retrieval logic
-        var magnetLinks = {
-            'BCES00850': '8b7fbe7c0329662d88abc94fafab02bbe3705966',
-            'BCUS98208': '660f08f941b7b3c54801d500a17a8bd742b20f4e',
-            'NPEB01283': '770962896251a8bb3666ffffaae80b3f33b27e5a'
-        };
+    const magnetLinks = {
+      'BCES00850': '8b7fbe7c0329662d88abc94fafab02bbe3705966',
+      'BCUS98208': '660f08f941b7b3c54801d500a17a8bd742b20f4e',
+      'NPEB01283': '770962896251a8bb3666ffffaae80b3f33b27e5a'
+      // Add more key-value pairs as needed
+    };
 
-        return magnetLinks[serialNumber];
-    }
-</script>
+    const trie = new Trie();
+    Object.keys(magnetLinks).forEach(key => trie.insert(key));
+
+    $(document).ready(function () {
+      const searchInput = $("#searchInput");
+      const suggestionsList = $("#suggestions");
+
+      searchInput.on("input", function () {
+        const searchTerm = searchInput.val();
+        const matchingKeys = trie.findSuggestions(searchTerm);
+
+        // Clear previous suggestions
+        suggestionsList.empty();
+
+        // Display matching keys in the suggestions list
+        matchingKeys.forEach(key => {
+          suggestionsList.append(`<li><a href="#">${key}</a></li>`);
+        });
+      });
+
+      // Handle click events on suggestions
+      suggestionsList.on("click", "li", function () {
+        event.preventDefault();
+        const clickedSuggestion = $(this).text();
+        // Do something with the clicked suggestion, e.g., fill the search bar
+        window.location.href = 'magnet:?xt=urn:btih:' + magnetLinks[clickedSuggestion];
+      });
+    });
+  </script>
 
 </body>
 </html>
