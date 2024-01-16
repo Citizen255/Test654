@@ -59,7 +59,7 @@
       }
     }
 
-    const magnetLinks = {
+    const dictionary = {
       'BCES00850': '8b7fbe7c0329662d88abc94fafab02bbe3705966',
       'BCUS98208': '660f08f941b7b3c54801d500a17a8bd742b20f4e',
       'NPEB01283': '770962896251a8bb3666ffffaae80b3f33b27e5a'
@@ -67,7 +67,7 @@
     };
 
     const trie = new Trie();
-    Object.keys(magnetLinks).forEach(key => trie.insert(key));
+    Object.keys(dictionary).forEach(key => trie.insert(key));
 
     $(document).ready(function () {
       const searchInput = $("#searchInput");
@@ -80,18 +80,18 @@
         // Clear previous suggestions
         suggestionsList.empty();
 
-        // Display matching keys in the suggestions list
+        // Display matching keys in the suggestions list as links
         matchingKeys.forEach(key => {
           suggestionsList.append(`<li><a href="#">${key}</a></li>`);
         });
       });
 
-      // Handle click events on suggestions
-      suggestionsList.on("click", "li", function () {
+      // Handle click events on suggestion links
+      suggestionsList.on("click", "a", function (event) {
         event.preventDefault();
         const clickedSuggestion = $(this).text();
         // Do something with the clicked suggestion, e.g., fill the search bar
-        window.location.href = 'magnet:?xt=urn:btih:' + magnetLinks[clickedSuggestion];
+        window.location.href = 'magnet:?xt=urn:btih:' + dictionary[clickedSuggestion];
       });
     });
   </script>
