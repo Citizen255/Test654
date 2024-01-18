@@ -4,6 +4,43 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: Arial, sans-serif;
+    }
+
+    header {
+      background-color: #f1f1f1;
+      padding: 10px;
+      position: fixed;
+      top: 0;
+      width: 100%;
+      z-index: 1;
+    }
+
+    #checkboxContainer,
+    #linkContainer {
+      position: fixed;
+      top: 40px; /* Adjust the top value based on the header height */
+      height: calc(100% - 40px); /* Adjust the height based on the header height */
+      overflow-y: scroll;
+      padding: 10px;
+      box-sizing: border-box;
+    }
+
+    #checkboxContainer {
+      left: 0;
+      width: 15%;
+      background-color: #e0e0e0;
+    }
+
+    #linkContainer {
+      right: 0;
+      width: 85%;
+      background-color: #e0e0e0;
+    }
+    
     #searchInput {
       width: 100%;
       box-sizing: border-box;
@@ -17,7 +54,7 @@
 
   <input type="text" id="searchInput" placeholder="Search Games, DLC, Updates">
   <div id="checkboxContainer"></div>
-  <ul id="suggestions"></ul>
+  <div id="linkContainer"></div>
 
   <script>
     consoles = ['PS', 'PS2', 'PS3', 'PS4', 'PS5',
@@ -41,7 +78,7 @@
       // Create label element for the checkbox
       const label = document.createElement('label');
       label.htmlFor = `checkbox${index}`;
-      label.appendChild(document.createTextNode(text + ':'));
+      label.appendChild(document.createTextNode(text));
 
       // Append checkbox and label to the container
       checkboxContainer.appendChild(label);
@@ -69,13 +106,12 @@
 
     $(document).ready(function () {
       const searchInput = $("#searchInput");
-      const suggestionsList = $("#suggestions");
+      const suggestionsList = $("#linkContainer");
       
       searchInput.on("input", function () {
         const searchTerm = searchInput.val().toLowerCase();
         const matchingKeys = filterKeysByString(games, searchTerm);
         
-        // Clear previous suggestions
         suggestionsList.empty();
 
         // Display matching keys in the suggestions list as links
