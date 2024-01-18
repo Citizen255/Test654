@@ -31,13 +31,13 @@
 
     #checkboxContainer {
       left: 0;
-      width: 15%;
+      width: 200px;
       background-color: #e0e0e0;
     }
 
     #linkContainer {
       right: 0;
-      width: 85%;
+      width: calc(100% - 200px);
       background-color: #e0e0e0;
     }
     
@@ -74,6 +74,7 @@
       checkbox.type = 'checkbox';
       checkbox.id = `checkbox${index}`;
       checkbox.value = text;
+      checkbox.checked = true;
 
       // Create label element for the checkbox
       const label = document.createElement('label');
@@ -85,7 +86,7 @@
       checkboxContainer.appendChild(checkbox);
 
       // Add a line break for better spacing
-      //checkboxContainer.appendChild(document.createElement('br'));
+      checkboxContainer.appendChild(document.createElement('br'));
     });
     
     function filterKeysByString(dictionary, filterString) {
@@ -100,7 +101,8 @@
       'Grand Theft Auto 5': ['770962896251a8bb3666ffffaae80b3f33b27e5a', 2],
       'New Super Mario Bros': ['a91947febb9b24b66e2658e2d3ee3ad4638fe623', 18],
       'Grand Theft Auto Advance': ['986a4ba4fcdff043bfe210f883d3b1bb7c65d69b', 17],
-      'Mario Kart 8 Deluxe': ['c150a8585a55482cd7816ffdf64dca9a736d558f', 21]
+      'Mario Kart 8 Deluxe': ['c150a8585a55482cd7816ffdf64dca9a736d558f', 21],
+      'Minecraft': ['2c0d8ad28b73fff9f10521d293ee5d902bc65edd', 2]
       // Add more key-value pairs as needed
     };
 
