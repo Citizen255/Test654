@@ -11,87 +11,48 @@
   <ul id="suggestions"></ul>
 
   <script>
-    class TrieNode {
-      constructor() {
-        this.children = {};
-        this.isEndOfWord = false;
-      }
+    function filterKeysByString(dictionary, filterString) {
+      const filteredKeys = Object.keys(dictionary).filter(key => key.toLowerCase().includes(filterString));
+      return filteredKeys;
     }
-
-    class Trie {
-      constructor() {
-        this.root = new TrieNode();
-      }
-
-      insert(word) {
-        let node = this.root;
-        for (let char of word) {
-          if (!node.children[char]) {
-            node.children[char] = new TrieNode();
-          }
-          node = node.children[char];
-        }
-        node.isEndOfWord = true;
-      }
-
-      findSuggestions(prefix) {
-        let node = this.root;
-        for (let char of prefix) {
-          if (!node.children[char]) {
-            return [];
-          }
-          node = node.children[char];
-        }
-        return this._getAllWords(node, prefix);
-      }
-
-      _getAllWords(node, currentPrefix) {
-        let suggestions = [];
-        if (node.isEndOfWord) {
-          suggestions.push(currentPrefix);
-        }
-
-        for (let [char, childNode] of Object.entries(node.children)) {
-          suggestions = suggestions.concat(this._getAllWords(childNode, currentPrefix + char));
-        }
-
-        return suggestions;
-      }
-    }
-
-    const dictionary = {
-      'Little Big Planet 2': '8b7fbe7c0329662d88abc94fafab02bbe3705966',
-      'Little Big Planet': '660f08f941b7b3c54801d500a17a8bd742b20f4e',
-      'Grand Theft Auto 5': '770962896251a8bb3666ffffaae80b3f33b27e5a'
+    consoles = ['PS', 'PS2', 'PS3', 'PS4', 'PS5',
+                'XBOX', 'XBOX 360', 'XBOX ONE', 'XBOX SERIES',
+                'N64', 'GameCube', 'Wii', 'Wii U',
+                'PSP', 'PS Vita',
+                'Game Boy', 'Game Boy Color', 'GBA',
+                'DS', '3DS', 'N3DS', 'Switch']
+    
+    const games = {
+      'Little Big Planet': ['660f08f941b7b3c54801d500a17a8bd742b20f4e', 2],
+      'Little Big Planet 2': ['8b7fbe7c0329662d88abc94fafab02bbe3705966', 2],
+      'Little Big Planet 3': ['7f752d5bced401ee5d10e243bc55513ff07a3b76', 2],
+      'Grand Theft Auto 5': ['770962896251a8bb3666ffffaae80b3f33b27e5a', 2],
+      'New Super Mario Bros': ['a91947febb9b24b66e2658e2d3ee3ad4638fe623', 18]
       // Add more key-value pairs as needed
     };
-
-    const trie = new Trie();
-    Object.keys(dictionary).forEach(key => trie.insert(key));
 
     $(document).ready(function () {
       const searchInput = $("#searchInput");
       const suggestionsList = $("#suggestions");
-
+      
       searchInput.on("input", function () {
-        const searchTerm = searchInput.val();
-        const matchingKeys = trie.findSuggestions(searchTerm);
-
+        const searchTerm = searchInput.val().toLowerCase();
+        const matchingKeys = filterKeysByString(games, searchTerm);
+        
         // Clear previous suggestions
         suggestionsList.empty();
 
         // Display matching keys in the suggestions list as links
         matchingKeys.forEach(key => {
-          suggestionsList.append(`<li><a href="#">${key}</a></li>`);
+          suggestionsList.append(`<li key="${key}"><a href="#">${key} (${consoles[games[key][1]]})</a></li>`);
         });
       });
 
       // Handle click events on suggestion links
-      suggestionsList.on("click", "a", function (event) {
+      suggestionsList.on("click", "li", function (event) {
         event.preventDefault();
-        const clickedSuggestion = $(this).text();
-        // Do something with the clicked suggestion, e.g., fill the search bar
-        window.location.href = 'magnet:?xt=urn:btih:' + dictionary[clickedSuggestion];
+        const clickedSuggestion = this.getAttribute("key");
+        window.location.href = 'magnet:?xt=urn:btih:' + games[clickedSuggestion][0];
       });
     });
   </script>
