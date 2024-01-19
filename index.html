@@ -89,37 +89,50 @@
       checkboxContainer.appendChild(document.createElement('br'));
     });
     
-    function filterKeysByString(dictionary, filterString) {
-      const filteredKeys = Object.keys(dictionary).filter(key => key.toLowerCase().includes(filterString));
-      return filteredKeys;
+    function filterKeysByString(list, filterString) {
+      // Initialize an array to store the indexes
+      const indexes = [];
+
+      // Iterate through the input list
+      for (let i = 0; i < list.length; i++) {
+        var IncludedConsole = document.getElementById(`checkbox${list[i][2]}`).checked;
+        if (IncludedConsole && list[i][0].toLowerCase().includes(filterString)) {
+          // If true, add the index to the result array
+          indexes.push(i);
+        }
+      } return indexes;
     }
     
-    const games = {
-      'Little Big Planet': ['660f08f941b7b3c54801d500a17a8bd742b20f4e', 2],
-      'Little Big Planet 2': ['8b7fbe7c0329662d88abc94fafab02bbe3705966', 2],
-      'Little Big Planet 3': ['7f752d5bced401ee5d10e243bc55513ff07a3b76', 2],
-      'Grand Theft Auto 5': ['770962896251a8bb3666ffffaae80b3f33b27e5a', 2],
-      'New Super Mario Bros': ['a91947febb9b24b66e2658e2d3ee3ad4638fe623', 18],
-      'Grand Theft Auto Advance': ['986a4ba4fcdff043bfe210f883d3b1bb7c65d69b', 17],
-      'Mario Kart 8 Deluxe': ['c150a8585a55482cd7816ffdf64dca9a736d558f', 21],
-      'Minecraft': ['2c0d8ad28b73fff9f10521d293ee5d902bc65edd', 2]
+    function UpdateList() {
+      const suggestionsList = $("#linkContainer");
+      
+      const searchTerm = document.getElementById("searchInput").value.toLowerCase();
+      const matchingKeys = filterKeysByString(games, searchTerm);
+      
+      suggestionsList.empty();
+      
+      // Display matching keys in the suggestions list as links
+      matchingKeys.forEach(index => {
+        suggestionsList.append(`<li><a href="magnet:?xt=urn:btih:${games[index][1]}">${games[index][0]} (${consoles[games[index][2]]})</a></li>`);
+      });
+    }
+    
+    const games = [
+      ['Little Big Planet', '660f08f941b7b3c54801d500a17a8bd742b20f4e', 2],
+      ['Little Big Planet 2', '8b7fbe7c0329662d88abc94fafab02bbe3705966', 2],
+      ['Little Big Planet 3', '7f752d5bced401ee5d10e243bc55513ff07a3b76', 2],
+      ['Grand Theft Auto 5', '770962896251a8bb3666ffffaae80b3f33b27e5a', 2],
+      ['New Super Mario Bros', 'a91947febb9b24b66e2658e2d3ee3ad4638fe623', 18],
+      ['Grand Theft Auto Advance', '986a4ba4fcdff043bfe210f883d3b1bb7c65d69b', 17],
+      ['Mario Kart 8 Deluxe', 'c150a8585a55482cd7816ffdf64dca9a736d558f', 21],
+      ['Minecraft', '2c0d8ad28b73fff9f10521d293ee5d902bc65edd', 2]
       // Add more key-value pairs as needed
-    };
+    ];
 
     $(document).ready(function () {
       const searchInput = $("#searchInput");
-      const suggestionsList = $("#linkContainer");
-      
       searchInput.on("input", function () {
-        const searchTerm = searchInput.val().toLowerCase();
-        const matchingKeys = filterKeysByString(games, searchTerm);
-        
-        suggestionsList.empty();
-
-        // Display matching keys in the suggestions list as links
-        matchingKeys.forEach(key => {
-          suggestionsList.append(`<li key="${key}"><a href="magnet:?xt=urn:btih:${games[key][0]}">${key} (${consoles[games[key][1]]})</a></li>`);
-        });
+        UpdateList();
       });
     });
   </script>
