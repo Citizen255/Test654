@@ -113,7 +113,7 @@
       
       // Display matching keys in the suggestions list as links
       matchingKeys.forEach(index => {
-        suggestionsList.append(`<li><a href="magnet:?xt=urn:btih:${games[index][1]}">${games[index][0]} (${consoles[games[index][2]]})</a></li>`);
+        suggestionsList.append(`<a href="magnet:?xt=urn:btih:${games[index][1]}">${games[index][0]} (${consoles[games[index][2]]})</a><br>`);
       });
     }
     
