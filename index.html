@@ -1,148 +1,35 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <style>
-    body {
-      margin: 0;
-      padding: 0;
-      font-family: Arial, sans-serif;
-    }
-
-    header {
-      background-color: #f1f1f1;
-      padding: 10px;
-      position: fixed;
-      top: 0;
-      width: 100%;
-      z-index: 1;
-    }
-
-    #checkboxContainer,
-    #linkContainer {
-      position: fixed;
-      top: 40px; /* Adjust the top value based on the header height */
-      height: calc(100% - 40px); /* Adjust the height based on the header height */
-      overflow-y: scroll;
-      padding: 10px;
-      box-sizing: border-box;
-    }
-
-    #checkboxContainer {
-      left: 0;
-      width: 200px;
-      background-color: #e0e0e0;
-    }
-
-    #linkContainer {
-      right: 0;
-      width: calc(100% - 200px);
-      background-color: #e0e0e0;
-    }
-    
-    #searchInput {
-      width: 100%;
-      box-sizing: border-box;
-      margin: 0;
-      padding: 10px;
-    }
-  </style>
-  <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Display JSON</title>
+    <style>
+        pre {
+            background-color: #f4f4f4;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+    </style>
 </head>
 <body>
+    <h1>JSON Viewer</h1>
+    <pre id="json-display">Loading...</pre>
 
-  <input type="text" id="searchInput" placeholder="Search Games, DLC, Updates">
-  <div id="checkboxContainer"></div>
-  <div id="linkContainer"></div>
-
-  <script>
-    consoles = ['PS', 'PS2', 'PS3', 'PS4', 'PS5',
-                'XBOX', 'XBOX 360', 'XBOX ONE', 'XBOX SERIES',
-                'NES', 'SNES',
-                'N64', 'GameCube', 'Wii', 'Wii U',
-                'PSP', 'PS Vita',
-                'GB', 'GBC', 'GBA',
-                'DS', '3DS', 'N3DS', 'Switch']
-    
-    // Get the container element
-    const checkboxContainer = document.getElementById("checkboxContainer");
-
-    // Loop through the list and create a checkbox for each string
-    consoles.forEach((text, index) => {
-      // Create checkbox element
-      const checkbox = document.createElement('input');
-      checkbox.type = 'checkbox';
-      checkbox.id = `checkbox${index}`;
-      checkbox.value = text;
-      checkbox.checked = true;
-
-      // Create label element for the checkbox
-      const label = document.createElement('label');
-      label.htmlFor = `checkbox${index}`;
-      label.appendChild(document.createTextNode(text));
-
-      // Append checkbox and label to the container
-      checkboxContainer.appendChild(label);
-      checkboxContainer.appendChild(checkbox);
-
-      // Add a line break for better spacing
-      checkboxContainer.appendChild(document.createElement('br'));
-    });
-    
-    function filterKeysByString(list, filterString) {
-      // Initialize an array to store the indexes
-      const indexes = [];
-
-      // Iterate through the input list
-      for (let i = 0; i < list.length; i++) {
-        var IncludedConsole = document.getElementById(`checkbox${list[i][2]}`).checked;
-        if (IncludedConsole && list[i][0].toLowerCase().includes(filterString)) {
-          // If true, add the index to the result array
-          indexes.push(i);
-        }
-      } return indexes;
-    }
-    
-    function UpdateList() {
-      const suggestionsList = $("#linkContainer");
-      
-      const searchTerm = document.getElementById("searchInput").value.toLowerCase();
-      const matchingKeys = filterKeysByString(games, searchTerm);
-      
-      suggestionsList.empty();
-      
-      // Display matching keys in the suggestions list as links
-      matchingKeys.forEach(index => {
-        suggestionsList.append(`<a href="magnet:?xt=urn:btih:${games[index][1]}">${games[index][0]} (${consoles[games[index][2]]})</a><br>`);
-      });
-    }
-    
-    const games = [
-      ['Little Big Planet', '660f08f941b7b3c54801d500a17a8bd742b20f4e', 2, 'BCUS98208'],
-      ['Little Big Planet 2', 'f9bdcfb26ba45882576e995efdc8d0cf0f291493', 2, 'BCES00850'],
-      ['Little Big Planet 3', '7f752d5bced401ee5d10e243bc55513ff07a3b76', 2, 'BCUS98362'],
-      ['Grand Theft Auto 5', '770962896251a8bb3666ffffaae80b3f33b27e5a', 2, 'NPEB01283'],
-      ['New Super Mario Bros', 'a91947febb9b24b66e2658e2d3ee3ad4638fe623', 20, 'A2DE'],
-      ['Grand Theft Auto Vice City Stories', '6c292252d870b7f670eb7a73b08f5b221e025142', 15, null],
-      ['Grand Theft Auto Advance', '986a4ba4fcdff043bfe210f883d3b1bb7c65d69b', 19, null],
-      ['Mario Kart 8 Deluxe', 'c150a8585a55482cd7816ffdf64dca9a736d558f', 23, 'AABPB13A000'],
-      ['Minecraft', '2c0d8ad28b73fff9f10521d293ee5d902bc65edd', 2, 'BLES01976'],
-      ['Super Mario 64 DS', '7eecd88a7ed40450aac6ea1369a2619bb8cf4554', 20, 'ASME'],
-      ['New Super Mario Bros 2', 'f435aaff7b022047230115287eb6a67412accd3e', 21, null],
-      ['Super Mario All-Stars + Super Mario World', 'c3204dbd22b210c30d292b9f1f5a8651729b9143', 10, null],
-      ["Mario & Luigi - Bowser's Inside Story.nds", 'a44945c4bbf2ff39a57b64d8eeabbf902d1bc1c9', 20, 'CLJP']
-    ];
-    
-    window.onload = UpdateList();
-
-    $(document).ready(function () {
-      const searchInput = $("#searchInput");
-      searchInput.on("input", function () {
-        UpdateList();
-      });
-    });
-  </script>
-
+    <script>
+        // Load and display JSON
+        fetch('data.json') // Replace with your JSON file path
+            .then(response => response.json())
+            .then(data => {
+                // Display JSON in a formatted way
+                const jsonDisplay = document.getElementById('json-display');
+                jsonDisplay.textContent = JSON.stringify(data, null, 2);
+            })
+            .catch(error => {
+                console.error('Error loading JSON:', error);
+                document.getElementById('json-display').textContent = 'Failed to load JSON.';
+            });
+    </script>
 </body>
 </html>
